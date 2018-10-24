@@ -27,6 +27,15 @@ def nature_cnn(unscaled_images, **conv_kwargs):
     return activ(fc(h3, 'fc1', nh=512, init_scale=np.sqrt(2)))
 
 
+@register("flat")
+def flat():
+    def network_fn(X):
+        h = tf.identity(X)
+        return h
+
+    return network_fn
+
+
 @register("mlp")
 def mlp(num_layers=2, num_hidden=64, activation=tf.tanh, layer_norm=False):
     """
