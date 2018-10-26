@@ -97,6 +97,7 @@ def learn(env,
           seed=None,
           lr=5e-4,
           total_timesteps=100000,
+          min_episodes=None,
           buffer_size=50000,
           exploration_fraction=0.1,
           exploration_final_eps=0.02,
@@ -320,6 +321,8 @@ def learn(env,
                 logger.record_tabular("mean reward", mean_reward)
                 logger.record_tabular("% time spent exploring", int(100 * exploration.value(t)))
                 logger.dump_tabular()
+            if done and min_episodes is not None and num_episodes > min_episodes and mean_reward > 0.75*env.vstar:
+                break
 
 #             if (checkpoint_freq is not None and t > learning_starts and
 #                     num_episodes > 100 and t % checkpoint_freq == 0):
