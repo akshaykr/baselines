@@ -208,8 +208,8 @@ def learn(env,
         num_actions=env.action_space.n,
         optimizer=tf.train.AdamOptimizer(learning_rate=lr),
         gamma=gamma,
-#         grad_norm_clipping=10,
-        grad_norm_clipping=None,
+        grad_norm_clipping=10,
+#        grad_norm_clipping=None,
         param_noise=param_noise
     )
 
@@ -311,16 +311,17 @@ def learn(env,
                 # Update target network periodically.
                 update_target()
 
-            mean_100ep_reward = round(np.mean(episode_rewards[-101:-1]), 1)
-            mean_reward = round(np.mean(episode_rewards[:-1]),1)
-            num_episodes = len(episode_rewards)
-            if done and print_freq is not None and len(episode_rewards) % print_freq == 0:
-                logger.record_tabular("steps", t)
-                logger.record_tabular("episodes", num_episodes)
-                logger.record_tabular("mean 100 episode reward", mean_100ep_reward)
-                logger.record_tabular("mean reward", mean_reward)
-                logger.record_tabular("% time spent exploring", int(100 * exploration.value(t)))
-                logger.dump_tabular()
+#             mean_100ep_reward = round(np.mean(episode_rewards[-101:-1]), 1)
+            mean_reward = round(np.mean(episode_rewards[:-1]),2)
+            num_episodes = len(episode_rewards)-1
+            if done and print_freq is not None and num_episodes % print_freq == 0:
+                print("Episode %d Completed. Average reward: %0.2f" % (num_episodes, mean_reward), flush=True)
+#                 logger.record_tabular("steps", t)
+#                 logger.record_tabular("episodes", num_episodes)
+#                 logger.record_tabular("mean 100 episode reward", mean_100ep_reward)
+#                 logger.record_tabular("mean reward", mean_reward)
+#                 logger.record_tabular("% time spent exploring", int(100 * exploration.value(t)))
+#                 logger.dump_tabular()
             if done and min_episodes is not None and num_episodes > min_episodes and mean_reward > 0.75*env.vstar:
                 break
 
